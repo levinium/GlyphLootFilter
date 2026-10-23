@@ -1,6 +1,6 @@
 # Glyph Loot Filter
 
-**A [D2RMM](https://github.com/olegbl/d2rmm) loot filter that turns gems, potions and scrolls into colored symbols and writes each rune's cube recipe into its name.**
+**A [D2RMM](https://github.com/olegbl/d2rmm) loot filter that turns gems, potions and scrolls into colored symbols and labels each rune with the cube recipe that upgrades it to the next one.**
 
 Diablo II: Resurrected labels every drop with its full name, so a screen of loot turns
 into a wall of text. This filter shortens the common drops to small colored glyphs
@@ -41,12 +41,12 @@ Every item the filter renames, from the game's own name to what you'll see on th
 
 ![Glyph key: potions, scrolls, throwables, bases, charms, junk and gems](docs/screenshots/key.png)
 
-## Runes that read their own recipe
+## Every rune shows its next upgrade
 
 Every rune from Thul up shows the gem and the number of runes the Horadric Cube needs
 to upgrade it:
 
-![Rune labels showing their cube recipe](docs/screenshots/runes.png)
+![Rune labels showing the cube recipe for the next rune](docs/screenshots/runes.png)
 
 | Label | Meaning |
 |---|---|
