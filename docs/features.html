@@ -81,15 +81,17 @@
   .wrapline { display: flex; flex-wrap: wrap; gap: 6px; }
 
   /* Runes */
-  .eq { display: flex; align-items: center; justify-content: center; gap: 18px; }
-  .eq .op { font-family: 'Cinzel', serif; font-weight: 800; font-size: 34px; color: var(--gold); }
-  .eq figure { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  .eq figcaption { font-size: 15px; color: var(--muted); }
-  .eq .d2 { font-size: 26px; }
-  .callouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .callouts div { text-align: center; font-size: 16px; line-height: 1.4; }
-  .callouts b { display: block; color: var(--gold-hi); font-weight: 600; font-size: 17px; margin-bottom: 3px; }
-  .callouts .d2 { font-size: 20px; }
+  /* Annotated rune label: leader lines run from each part of the label to its callout */
+  .anno { position: relative; height: 196px; }
+  .annolabel { position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+  .annolabel .d2 { font-size: 36px; }
+  .leaders { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .leaders path { fill: none; stroke: var(--gold); stroke-width: 1.5; opacity: .75; }
+  .leaders circle { fill: var(--gold); }
+  .callout { position: absolute; top: 132px; width: 300px; transform: translateX(-50%); text-align: center; font-size: 15.5px; line-height: 1.35; }
+  .callout b { display: block; color: var(--gold-hi); font-weight: 600; font-size: 17px; margin-bottom: 2px; }
+  .reading { text-align: center; font-size: 18px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(200,169,81,.25); }
+  .reading b { color: var(--gold-hi); font-weight: 600; }
 
   /* Tooltip */
   .tooltip { align-self: center; background: rgba(0,0,0,.9); border: 1px solid #444; padding: 14px 26px; text-align: center; }
@@ -130,13 +132,15 @@
   <section class="scene" id="runes">
     <h1>Every rune shows its next upgrade</h1>
     <p class="lede">Every rune from Thul up names the gem and how many runes the Horadric Cube needs to upgrade it.</p>
-    <div class="panel" style="padding:28px 22px 24px; gap:26px">
-      <div class="eq" id="runeEq"></div>
-      <div class="callouts">
-        <div><b>(24)</b>The rune's number, colored by tier</div>
-        <div><b><span class="d2" id="gemKey"></span> the gem</b>Its color is the gem type and its shape is the quality: here a normal Sapphire</div>
-        <div><b>+2</b>How many of this rune to cube with the gem</div>
+    <div class="panel" style="padding:22px 22px 18px">
+      <div class="anno" id="anno">
+        <svg class="leaders" id="leaders"></svg>
+        <div class="annolabel" id="annoLabel"></div>
+        <div class="callout" data-part="pNum"><b>Rune number</b>Ist is rune 24</div>
+        <div class="callout" data-part="pGem"><b>Gem to add</b>Color is the gem, shape is the quality: a normal Sapphire</div>
+        <div class="callout" data-part="pCount"><b>Runes to add</b>2 Ist Runes</div>
       </div>
+      <p class="reading">Cube <b>2 Ist Runes</b> with <b>1 Sapphire</b> to get the next rune, <b>Gul</b>.</p>
     </div>
     <div class="versus" style="margin-top:22px; grid-template-columns: 1.15fr 1fr">
       <div class="panel">
@@ -272,13 +276,34 @@
   $('lootAfter').innerHTML = loot.map(([, , t, c]) => label(t, c, 25)).join('');
 
   // ---- Runes
-  const fig = (html, cap) => `<figure>${html}<figcaption>${cap}</figcaption></figure>`;
-  $('runeEq').innerHTML = [
-    fig(label(M.r24, ORANGE, 30), 'Ist Rune'), '<span class="op">× 2</span>', '<span class="op">+</span>',
-    fig(label(M.gsb, W, 30), 'Sapphire'), '<span class="op">→</span>',
-    fig(label(M.r25, ORANGE, 30), 'Gul Rune'),
-  ].join('');
-  $('gemKey').innerHTML = line(M.gsb, W);
+  // M.r24 split into the parts the callouts point at; colors match the ÿc codes in the string
+  const seg = (text, color, id) => `<span style="color:${color}"${id ? ` id="${id}"` : ''}>${esc(text)}</span>`;
+  $('annoLabel').innerHTML = `<span class="label d2">` +
+    `<div>${seg('•Pick  Up•', 'var(--cPurple)')}</div>` +
+    `<div>${seg('Ist Rune ', 'var(--cU)')}<span id="pNum">${seg('(', 'var(--c9)')}${seg('24', 'var(--c8)')}${seg(')', 'var(--c9)')}</span>` +
+    `${seg(' [', 'var(--c9)')}${seg('■', 'var(--cU)', 'pGem')}<span id="pCount">${seg('+', 'var(--c0)')}${seg('2', 'var(--c8)')}</span>${seg(']', 'var(--c9)')}</div>` +
+    `</span>`;
+
+  // The gem callout sits straight below the gem; the outer two fan out left and right,
+  // so no two leaders share a horizontal run
+  function drawLeaders() {
+    const box = $('anno').getBoundingClientRect();
+    const callouts = [...document.querySelectorAll('#anno .callout')];
+    const center = (id) => { const r = $(id).getBoundingClientRect(); return r.left + r.width / 2 - box.left; };
+    const slots = { pNum: box.width * 0.2, pGem: center('pGem'), pCount: box.width * 0.8 };
+    let paths = '';
+    callouts.forEach((c) => {
+      c.style.left = `${slots[c.dataset.part]}px`;
+      const part = $(c.dataset.part).getBoundingClientRect();
+      const cb = c.getBoundingClientRect();
+      const x1 = part.left + part.width / 2 - box.left, y1 = part.bottom - box.top + 6;
+      const x2 = cb.left + cb.width / 2 - box.left, y2 = cb.top - box.top - 8;
+      const mid = y1 + (y2 - y1) * 0.45;
+      paths += `<circle cx="${x1}" cy="${y1}" r="3"/><path d="M${x1} ${y1} V${mid} H${x2} V${y2}"/>`;
+    });
+    $('leaders').innerHTML = paths;
+  }
+  document.fonts.ready.then(drawLeaders);
   const ex = [
     [M.r10, '3 Thul + Chipped Topaz → Amn'],
     [M.r19, '3 Fal + Flawed Ruby → Lem'],
