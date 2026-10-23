@@ -1,0 +1,277 @@
+<!doctype html>
+<!--
+  Source for docs/banner.png. Render at 1920x1080.
+  Item text uses Diablo II: Resurrected's own fonts, which are not included in this repo:
+  copy exocetblizzardot-medium.otf and blizzardglobal-v5_81.ttf from the game's
+  Data/hd/ui/fonts into docs/fonts/ before rendering.
+  Every in-game label below is the exact string mod.js writes.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Exocet'; src: url('fonts/exocetblizzardot-medium.otf'); }
+  @font-face { font-family: 'BlizzardGlobal'; src: url('fonts/blizzardglobal-v5_81.ttf'); }
+  :root {
+    --gold: #C8A951; --gold-hi: #f1d98c; --muted: #9c927c; --note: #d8cfb8;
+    /* D2R FontColor values from global/ui/layouts/_profilehd.json */
+    --c0: #F0F0F0; --c1: #FC4646; --c2: #00FC00; --c3: #6E6EFF; --c4: #C7B377;
+    --c5: #636363; --c6: #000000; --c7: #C7B377; --c8: #FFA800; --c9: #FFFF64;
+    --cPurple: #AE00FF; --cDarkGreen: #008000; --cU: #AFB7FF; --cT: #C23B3B;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    background:
+      radial-gradient(ellipse 60% 45% at 50% 8%, rgba(120, 70, 20, .30), transparent 70%),
+      radial-gradient(ellipse at 50% 50%, #1a1410 0%, #0a0806 70%, #000 100%);
+    font-family: 'Inter', sans-serif;
+    color: var(--note);
+    position: relative;
+  }
+  body::before {
+    content: ""; position: absolute; inset: 0; opacity: .18;
+    background-image:
+      repeating-linear-gradient(37deg, rgba(255,255,255,.04) 0 2px, transparent 2px 7px),
+      repeating-linear-gradient(-53deg, rgba(0,0,0,.25) 0 3px, transparent 3px 11px);
+  }
+  .frame {
+    position: absolute; inset: 34px;
+    border: 2px solid rgba(200,169,81,.55);
+    box-shadow: inset 0 0 0 8px rgba(0,0,0,.6), inset 0 0 0 10px rgba(200,169,81,.25), inset 0 0 120px rgba(0,0,0,.9);
+  }
+  .corner { position: absolute; width: 70px; height: 70px; border: 4px solid var(--gold); }
+  .tl { top: 24px; left: 24px; border-right: 0; border-bottom: 0; }
+  .tr { top: 24px; right: 24px; border-left: 0; border-bottom: 0; }
+  .bl { bottom: 24px; left: 24px; border-right: 0; border-top: 0; }
+  .br { bottom: 24px; right: 24px; border-left: 0; border-top: 0; }
+
+  header { position: absolute; top: 56px; left: 0; right: 0; text-align: center; }
+  h1 {
+    font-family: 'Cinzel', serif; font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: 4px;
+    background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 55%, #8a6a24 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 5px 0 rgba(0,0,0,.85)) drop-shadow(0 0 40px rgba(200,169,81,.25));
+  }
+  .sub { margin-top: 10px; font-weight: 500; font-size: 20px; letter-spacing: 6px; text-transform: uppercase; }
+
+  main {
+    position: absolute; top: 190px; left: 74px; right: 74px; bottom: 92px;
+    display: grid; grid-template-columns: 510px 1fr 530px; grid-template-rows: 426px 1fr; gap: 22px;
+  }
+  .panel {
+    background: rgba(12, 9, 6, .78);
+    border: 1px solid rgba(200,169,81,.38);
+    box-shadow: inset 0 0 0 4px rgba(0,0,0,.5), 0 10px 30px rgba(0,0,0,.6);
+    padding: 16px 24px;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .runes { grid-column: 2; grid-row: 1 / span 2; }
+  h2 {
+    font-family: 'Cinzel', serif; font-weight: 800; font-size: 25px; letter-spacing: 2px; color: var(--gold);
+    padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid rgba(200,169,81,.3);
+  }
+  h2 small { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 15px; letter-spacing: 0; color: var(--muted); margin-left: 8px; }
+
+  /* In-game text */
+  .d2 { font-family: 'Exocet', 'BlizzardGlobal', serif; font-size: 25px; line-height: 1.15; white-space: pre; }
+  .label { display: inline-flex; flex-direction: column; align-items: center; background: rgba(0,0,0,.82); padding: 3px 10px 2px; }
+  .note { font-size: 17px; color: var(--note); }
+  .muted { color: var(--muted); }
+
+  /* Gems */
+  table.gems { border-collapse: collapse; width: 100%; }
+  .gems th { font-weight: 500; font-size: 14px; color: var(--muted); padding-bottom: 6px; text-align: center; }
+  .gems th .d2 { display: block; font-size: 22px; color: var(--c0); }
+  .gems td { text-align: center; padding: 2px 0; }
+  .gems td:first-child { text-align: left; font-size: 16px; color: var(--note); width: 110px; }
+  .gems .d2 { font-size: 26px; }
+
+  /* Two-column legend lists */
+  .list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; align-content: start; }
+  .list .note { font-size: 16px; white-space: nowrap; }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .row .label { min-width: 84px; }
+
+  /* Runes */
+  .runecols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; }
+  .runecols h3 { font-weight: 600; font-size: 15px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .stack { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .key {
+    margin-top: auto; padding: 16px 18px; border: 1px dashed rgba(200,169,81,.45); background: rgba(200,169,81,.05);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .key .big .d2 { font-size: 34px; }
+  .callouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .callouts div { font-size: 15.5px; line-height: 1.35; text-align: center; }
+  .callouts b { display: block; font-weight: 600; color: var(--gold-hi); font-size: 16px; margin-bottom: 2px; }
+  .callouts .d2 { font-size: 20px; }
+
+  /* Stats tooltip */
+  .tooltip { align-self: center; background: rgba(0,0,0,.88); border: 1px solid #444; padding: 12px 22px; text-align: center; }
+  .tooltip .d2 { font-size: 18px; line-height: 1.32; }
+
+  footer { position: absolute; bottom: 50px; left: 0; right: 0; text-align: center; font-size: 16px; color: var(--muted); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
+  <header>
+    <h1>GLYPH LOOT FILTER</h1>
+    <div class="sub">A D2RMM mod for Diablo II: Resurrected</div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Gems at a glance</h2>
+      <table class="gems">
+        <thead><tr><th></th>
+          <th><span class="d2">▲</span>Chipped</th><th><span class="d2">◆</span>Flawed</th><th><span class="d2">■</span>Normal</th>
+          <th><span class="d2">☆</span>Flawless</th><th><span class="d2">★</span>Perfect</th></tr></thead>
+        <tbody id="gems"></tbody>
+      </table>
+    </section>
+
+    <section class="panel runes">
+      <h2>Runes that read their own recipe</h2>
+      <div class="runecols">
+        <div>
+          <h3>Low &amp; mid runes</h3>
+          <div class="stack" id="lowRunes"></div>
+        </div>
+        <div>
+          <h3>High runes stand out</h3>
+          <div class="stack" id="highRunes"></div>
+        </div>
+      </div>
+      <div class="key">
+        <div class="big" id="keyRune"></div>
+        <div class="callouts">
+          <div><b>(24)</b>Rune number</div>
+          <div><b><span class="d2" id="keyGem"></span> Gem to cube with</b>Normal Sapphire</div>
+          <div><b>+2</b>Runes per upgrade</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Runeword bases &amp; charms</h2>
+      <div class="stack" id="bases" style="gap:10px"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Potions, scrolls &amp; more</h2>
+      <div class="list" id="misc"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Stats that matter <small>color-coded by type</small></h2>
+      <div class="tooltip" id="stats"></div>
+    </section>
+  </main>
+
+  <footer>Based on D2R Simple Loot Filter by Cbraqz and kabobist &nbsp;·&nbsp; Preview rendered from the mod's own strings</footer>
+
+<script>
+  // D2R color codes used by the mod
+  const COLOR = {
+    '0': 'var(--c0)', '1': 'var(--c1)', '2': 'var(--c2)', '3': 'var(--c3)', '4': 'var(--c4)', '5': 'var(--c5)',
+    '6': 'var(--c6)', '7': 'var(--c7)', '8': 'var(--c8)', '9': 'var(--c9)', ';': 'var(--cPurple)',
+    ':': 'var(--cDarkGreen)', 'U': 'var(--cU)', 'T': 'var(--cT)',
+  };
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+  // Renders one line of ÿc-coded text starting in `base` color
+  function line(text, base) {
+    let html = '', color = base;
+    for (const part of text.split(/(ÿc.)/)) {
+      if (/^ÿc.$/.test(part)) color = COLOR[part[2]] || color;
+      else if (part) html += `<span style="color:${color}">${esc(part)}</span>`;
+    }
+    return html;
+  }
+  // D2R stacks multi-line names bottom-up: text after \n is drawn above
+  function label(text, base = 'var(--c0)') {
+    const lines = text.split('\n').reverse().map((l) => `<div>${line(l, base)}</div>`).join('');
+    return `<span class="label d2">${lines}</span>`;
+  }
+  // Fills printf-style modifier strings with sample values
+  const fmt = (s, v) => s.replace(/%\+d/, (v >= 0 ? '+' : '') + v).replace(/%d/, v).replace(/%%/g, '%');
+
+  // Exact strings written by mod.js
+  const S = {
+    gems: [
+      ['Amethyst', ['ÿc;▲ÿc0', 'ÿc;◆ÿc0', 'ÿc;■ÿc0', 'ÿc;☆ÿc0', 'ÿc;★ÿc0']],
+      ['Topaz',    ['ÿc9▲ÿc0', 'ÿc9◆ÿc0', 'ÿc9■ÿc0', 'ÿc9☆ÿc0', 'ÿc9★ÿc0']],
+      ['Sapphire', ['ÿcU▲ÿc0', 'ÿcU◆ÿc0', 'ÿcU■ÿc0', 'ÿcU☆ÿc0', 'ÿcU★ÿc0']],
+      ['Emerald',  ['ÿc2▲ÿc0', 'ÿc2◆ÿc0', 'ÿc2■ÿc0', 'ÿc2☆ÿc0', 'ÿc2★ÿc0']],
+      ['Ruby',     ['ÿc1▲ÿc0', 'ÿc1◆ÿc0', 'ÿc1■ÿc0', 'ÿc1☆ÿc0', 'ÿc1★ÿc0']],
+      ['Diamond',  ['ÿc0▲ÿc0', 'ÿc0◆ÿc0', 'ÿc0■ÿc0', 'ÿc0☆ÿc0', 'ÿc0★ÿc0']],
+      ['Skull',    ['ÿc5▲ÿc0', 'ÿc5◆ÿc0', 'ÿc5■ÿc0', 'ÿc5☆ÿc0', 'ÿc5★ÿc0']],
+    ],
+    lowRunes: [
+      'El Rune ÿc9(ÿc01ÿc9)',
+      'Ort Rune ÿc9(ÿc39ÿc9)',
+      'Thul Rune ÿc9(ÿc310ÿc9) [ÿc9▲ÿc0+ÿc83ÿc9]',
+      'Shael Rune ÿc9(ÿc313ÿc9) [ÿc1▲ÿc0+ÿc83ÿc9]',
+      'Io Rune ÿc9(ÿc316ÿc9) [ÿc9◆ÿc0+ÿc83ÿc9]',
+      'Fal Rune ÿc9(ÿc819ÿc9) [ÿc1◆ÿc0+ÿc83ÿc9]',
+    ],
+    highRunes: [
+      'ÿcULem Rune ÿc9(ÿc820ÿc9) [ÿc2◆ÿc0+ÿc83ÿc9]\nÿc;•Pick  Up•ÿc0',
+      'ÿcUUm Rune ÿc9(ÿc822ÿc9) [ÿc9■ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+      'ÿcUVex Rune ÿc9(ÿc126ÿc9) [ÿc2■ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+      'ÿcUBer Rune ÿc9(ÿc130ÿc9) [ÿcU☆ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+      'ÿcUJah Rune ÿc9(ÿc131ÿc9) [ÿc1☆ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+      'ÿcUZod Rune ÿc9(ÿc133ÿc9)\nÿc;•Pick  Up•ÿc0',
+    ],
+    keyRune: 'ÿcUIst Rune ÿc9(ÿc824ÿc9) [ÿcU■ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+    bases: [
+      ['=Phase Blade=', 'var(--c0)', 'Elite runeword bases'],
+      ['=Archon Plate=', 'var(--c0)', null],
+      ['=Monarch=', 'var(--c0)', null],
+      ['=Occult Tome=', 'var(--c0)', 'Class bases too, including Warlock'],
+      ['••Grand Charm••', 'var(--c3)', 'Charms and jewels'],
+      ['••Jewel••', 'var(--c3)', null],
+      ['ÿc5•ÿc6Short Sword', 'var(--c0)', 'Low quality junk fades to a dot'],
+    ],
+    misc: [
+      ['ÿc1♥ÿc0', 'Super Healing'], ['ÿc11ÿc0HP', 'Minor Healing'],
+      ['ÿc3♥ÿc0', 'Super Mana'],    ['ÿc31ÿc0MP', 'Minor Mana'],
+      ['ÿc;♥ÿc0', 'Full Rejuv'],    ['ÿc;♡ÿc0', 'Rejuvenation'],
+      ['=ÿc3○ÿc0=', 'Town Portal'], ['=ÿc1○ÿc0=', 'Identify'],
+      ['ÿc5→→ÿc0', 'Arrows'],       ['ÿc5⇒⇒ÿc0', 'Bolts'],
+      ['ÿc5†ÿc0', 'Key'],           ['Fire Pot ÿc81', 'Throw pots'],
+    ],
+    stats: [
+      ['ÿc4•%+d to All Skill Levels•ÿc3', 2],
+      ['ÿc0•%+d%% Faster Cast Rate•ÿc3', 20],
+      ['ÿc0•%+d%% Faster Hit Recovery•ÿc3', 30],
+      ['ÿcT•%+d%% Increased Attack Speed•ÿc3', 40],
+      ['ÿc1•Fire Resist %+d%%•ÿc3', 30],
+      ['ÿcU•Cold Resist %+d%%•ÿc3', 30],
+      ['ÿc9•Lightning Resist %+d%%•ÿc3', 30],
+      ['ÿc2•Poison Resist %+d%%•ÿc3', 30],
+      ['ÿc4•Cannot Be Frozen•ÿc3', 0],
+    ],
+  };
+
+  document.getElementById('gems').innerHTML = S.gems.map(([name, cells]) =>
+    `<tr><td>${name}</td>${cells.map((c) => `<td>${label(c)}</td>`).join('')}</tr>`).join('');
+  document.getElementById('lowRunes').innerHTML = S.lowRunes.map((r) => label(r, 'var(--c8)')).join('');
+  document.getElementById('highRunes').innerHTML = S.highRunes.map((r) => label(r, 'var(--c8)')).join('');
+  document.getElementById('keyRune').innerHTML = label(S.keyRune, 'var(--c8)');
+  document.getElementById('keyGem').innerHTML = line('ÿcU■', 'var(--c0)');
+  document.getElementById('bases').innerHTML = S.bases.map(([s, base, note]) =>
+    `<div class="row">${label(s, base)}${note ? `<span class="note">${note}</span>` : ''}</div>`).join('');
+  document.getElementById('misc').innerHTML = S.misc.map(([s, name]) =>
+    `<div class="row">${label(s)}<span class="note">${name}</span></div>`).join('');
+  document.getElementById('stats').innerHTML = S.stats.map(([s, v]) =>
+    `<div class="d2">${line(fmt(s, v), 'var(--c3)')}</div>`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "$schema": "../config-schema.json",
+  "name": "Glyph Loot Filter",
+  "description": "A compact loot filter that shows gems, potions, scrolls, keys and ammo as colored symbols, labels every rune with its level and the gem it needs to cube up, flags high runes, highlights runeword bases, and color-codes the stats that matter. Based on D2R Simple Loot Filter by Cbraqz and kabobist.",
+  "author": "levinium",
+  "website": "https://github.com/levinium/GlyphLootFilter",
+  "version": "1.0",
+  "config": [
+    {
+      "id": "toggleall",
+      "name": "Toggle All",
+      "type": "section",
+      "allowToggleAll": true,
+      "defaultExpanded": true,
+      "description": "Each option edits one of the game's string files.",
+      "children": [
+        {
+          "id": "itemNames",
+          "name": "Item names",
+          "type": "checkbox",
+          "defaultValue": true,
+          "description": "Gem, potion, scroll, key and ammo symbols; runeword base and charm highlights (item-names.json). Most of the filter lives here."
+        },
+        {
+          "id": "itemModifiers",
+          "name": "Item stats",
+          "type": "checkbox",
+          "defaultValue": true,
+          "description": "Color-codes stats such as resistances, +skills, FCR, FHR and IAS (item-modifiers.json)."
+        },
+        {
+          "id": "itemNameaffixes",
+          "name": "Low quality items and normal gems",
+          "type": "checkbox",
+          "defaultValue": true,
+          "description": "Shrinks Low Quality, Damaged, Cracked and Crude items to a gray dot, and draws the four normal gems that live in this file (item-nameaffixes.json)."
+        },
+        {
+          "id": "itemRunes",
+          "name": "Runes",
+          "type": "checkbox",
+          "defaultValue": true,
+          "description": "Shows each rune's number and the gem needed to cube it up, and flags Lem and higher with a Pick Up line (item-runes.json)."
+        }
+      ]
+    }
+  ]
+}
