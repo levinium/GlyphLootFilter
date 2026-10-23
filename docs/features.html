@@ -1,0 +1,378 @@
+<!doctype html>
+<!--
+  Source for the feature images in docs/screenshots/. Render at 1600x900, one scene per query:
+  features.html?loot, ?runes, ?gems, ?stats, ?key.
+  Item text uses Diablo II: Resurrected's own fonts, which are not included in this repo:
+  copy exocetblizzardot-medium.otf and blizzardglobal-v5_81.ttf from the game's
+  Data/hd/ui/fonts into docs/fonts/ before rendering.
+  "After" labels are the exact strings mod.js writes; "before" labels are the game's own names.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Exocet'; src: url('fonts/exocetblizzardot-medium.otf'); }
+  @font-face { font-family: 'BlizzardGlobal'; src: url('fonts/blizzardglobal-v5_81.ttf'); }
+  :root {
+    --gold: #C8A951; --gold-hi: #f1d98c; --muted: #9c927c; --note: #d8cfb8;
+    /* D2R FontColor values from global/ui/layouts/_profilehd.json */
+    --c0: #F0F0F0; --c1: #FC4646; --c2: #00FC00; --c3: #6E6EFF; --c4: #C7B377;
+    --c5: #636363; --c6: #000000; --c7: #C7B377; --c8: #FFA800; --c9: #FFFF64;
+    --cPurple: #AE00FF; --cDarkGreen: #008000; --cU: #AFB7FF; --cT: #C23B3B;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 900px; overflow: hidden; }
+  body {
+    background:
+      radial-gradient(ellipse 60% 45% at 50% 0%, rgba(120, 70, 20, .28), transparent 70%),
+      radial-gradient(ellipse at 50% 50%, #1a1410 0%, #0a0806 70%, #000 100%);
+    font-family: 'Inter', sans-serif; color: var(--note); position: relative;
+  }
+  body::before {
+    content: ""; position: absolute; inset: 0; opacity: .18;
+    background-image:
+      repeating-linear-gradient(37deg, rgba(255,255,255,.04) 0 2px, transparent 2px 7px),
+      repeating-linear-gradient(-53deg, rgba(0,0,0,.25) 0 3px, transparent 3px 11px);
+  }
+  .frame {
+    position: absolute; inset: 26px; border: 2px solid rgba(200,169,81,.5);
+    box-shadow: inset 0 0 0 7px rgba(0,0,0,.6), inset 0 0 0 9px rgba(200,169,81,.22), inset 0 0 100px rgba(0,0,0,.9);
+  }
+  .corner { position: absolute; width: 56px; height: 56px; border: 3px solid var(--gold); }
+  .tl { top: 18px; left: 18px; border-right: 0; border-bottom: 0; }
+  .tr { top: 18px; right: 18px; border-left: 0; border-bottom: 0; }
+  .bl { bottom: 18px; left: 18px; border-right: 0; border-top: 0; }
+  .br { bottom: 18px; right: 18px; border-left: 0; border-top: 0; }
+
+  .scene { display: none; position: absolute; inset: 56px 64px 72px; flex-direction: column; }
+  .scene.on { display: flex; }
+  h1 {
+    font-family: 'Cinzel', serif; font-weight: 800; font-size: 46px; letter-spacing: 2px; text-align: center;
+    background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 55%, #8a6a24 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 4px 0 rgba(0,0,0,.85));
+  }
+  .lede { text-align: center; font-size: 19px; color: var(--note); margin: 8px 0 26px; }
+  footer { position: absolute; bottom: 34px; left: 0; right: 0; text-align: center; font-size: 13px; color: var(--muted); letter-spacing: 1px; }
+
+  .panel {
+    background: rgba(12, 9, 6, .78); border: 1px solid rgba(200,169,81,.38);
+    box-shadow: inset 0 0 0 4px rgba(0,0,0,.5), 0 10px 30px rgba(0,0,0,.6);
+    padding: 18px 22px; display: flex; flex-direction: column;
+  }
+  .tag { font-weight: 600; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; text-align: center; }
+  .tag.after { color: var(--gold); }
+
+  /* In-game text */
+  .d2 { font-family: 'Exocet', 'BlizzardGlobal', serif; font-size: 22px; line-height: 1.15; white-space: pre; }
+  .label { display: inline-flex; flex-direction: column; align-items: center; background: rgba(0,0,0,.82); padding: 3px 9px 2px; }
+
+  /* Loot pile */
+  .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; flex: 1; min-height: 0; }
+  .pile { flex: 1; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; align-items: center; gap: 9px 10px;
+    background: radial-gradient(ellipse at 50% 55%, rgba(70, 58, 40, .45), rgba(20, 16, 12, .2) 70%); }
+
+  /* Before -> after rows */
+  .rows { display: flex; flex-direction: column; gap: 10px; }
+  .pair { display: grid; align-items: center; gap: 14px; }
+  .arrow { color: var(--gold); font-size: 26px; text-align: center; }
+  .wrapline { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* Runes */
+  .eq { display: flex; align-items: center; justify-content: center; gap: 18px; }
+  .eq .op { font-family: 'Cinzel', serif; font-weight: 800; font-size: 34px; color: var(--gold); }
+  .eq figure { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .eq figcaption { font-size: 15px; color: var(--muted); }
+  .eq .d2 { font-size: 26px; }
+  .callouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .callouts div { text-align: center; font-size: 16px; line-height: 1.4; }
+  .callouts b { display: block; color: var(--gold-hi); font-weight: 600; font-size: 17px; margin-bottom: 3px; }
+  .callouts .d2 { font-size: 20px; }
+
+  /* Tooltip */
+  .tooltip { align-self: center; background: rgba(0,0,0,.9); border: 1px solid #444; padding: 14px 26px; text-align: center; }
+  .tooltip .d2 { font-size: 24px; line-height: 1.4; }
+
+  /* Glyph key */
+  .keycols { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1.25fr); gap: 20px; flex: 1; min-height: 0; }
+  .keycols .rows { gap: 4px; }
+  .keycols .panel { padding: 12px 22px; }
+  .gemstrip { flex-direction: row; align-items: center; gap: 26px; padding: 8px 22px; margin-bottom: 14px; }
+  .panel.gemstrip h3 { border: 0; margin: 0; padding: 0 26px 0 0; border-right: 1px solid rgba(200,169,81,.3); align-self: stretch; display: flex; align-items: center; }
+  .gemrows { flex: 1; display: flex; flex-direction: column; }
+  .gemkey { display: flex; align-items: center; gap: 16px; font-size: 15px; white-space: nowrap; padding: 4px 0; }
+  .gemkey + .gemkey { border-top: 1px solid rgba(200,169,81,.2); }
+  .gemkey .dim { width: 150px; font-weight: 600; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+  .gemkey .dim i { font-style: normal; color: var(--muted); }
+  .gemkey .items { display: flex; align-items: center; gap: 18px; }
+  .gemkey span.k { gap: 7px; }
+  .gemkey span.k { display: inline-flex; align-items: center; gap: 6px; }
+  .gemkey b { font-weight: 600; color: var(--muted); margin-right: 2px; }
+  .keycols h3, .gemstrip h3 { font-family: 'Cinzel', serif; font-weight: 800; font-size: 19px; letter-spacing: 1px; color: var(--gold);
+    padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid rgba(200,169,81,.3); }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
+  <section class="scene" id="loot">
+    <h1>See what matters at a glance</h1>
+    <p class="lede">The same pile of loot. Common drops shrink to glyphs, so the high rune, the runeword base and the charms stand out.</p>
+    <div class="versus">
+      <div class="panel"><div class="tag">Vanilla</div><div class="pile" id="lootBefore"></div></div>
+      <div class="panel"><div class="tag after">With Glyph Loot Filter</div><div class="pile" id="lootAfter"></div></div>
+    </div>
+  </section>
+
+  <section class="scene" id="runes">
+    <h1>Runes show their own cube recipe</h1>
+    <p class="lede">Every rune from Thul up names the gem and how many runes the Horadric Cube needs to upgrade it.</p>
+    <div class="panel" style="padding:28px 22px 24px; gap:26px">
+      <div class="eq" id="runeEq"></div>
+      <div class="callouts">
+        <div><b>(24)</b>The rune's number, colored by tier</div>
+        <div><b><span class="d2" id="gemKey"></span> the gem</b>Its color is the gem type and its shape is the quality: here a normal Sapphire</div>
+        <div><b>+2</b>How many of this rune to cube with the gem</div>
+      </div>
+    </div>
+    <div class="versus" style="margin-top:22px; grid-template-columns: 1.15fr 1fr">
+      <div class="panel">
+        <div class="tag after">More examples</div>
+        <div class="rows" id="runeExamples"></div>
+      </div>
+      <div class="panel">
+        <div class="tag after">High runes stand out</div>
+        <div class="pile" id="highRunes" style="background:none; gap:10px 14px"></div>
+        <p style="text-align:center; font-size:15px; color:var(--muted); margin-top:10px">Lem and above turn light blue with a Pick Up line, a touch from the original filter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="gems">
+    <h1>Every gem is a single glyph</h1>
+    <p class="lede">Color is the gem, shape is the quality: ▲ Chipped &nbsp;◆ Flawed &nbsp;■ Normal &nbsp;☆ Flawless &nbsp;★ Perfect</p>
+    <div class="panel" style="flex:1; justify-content:center; --rowgap:14px">
+      <div class="pair" style="grid-template-columns: 1fr 40px 320px; margin-bottom:8px">
+        <div class="tag" style="margin:0">Vanilla</div><div></div><div class="tag after" style="margin:0">Glyph Loot Filter</div>
+      </div>
+      <div class="rows" id="gemRows" style="gap:16px"></div>
+    </div>
+  </section>
+
+  <section class="scene" id="stats">
+    <h1>The stats you want, color-coded</h1>
+    <p class="lede">+Skills in gold, each resistance in its element's color, cast and recovery speed in white. Everything else stays as it was.</p>
+    <div class="versus">
+      <div class="panel" style="justify-content:center"><div class="tag">Vanilla</div><div class="tooltip" id="statsBefore"></div></div>
+      <div class="panel" style="justify-content:center"><div class="tag after">With Glyph Loot Filter</div><div class="tooltip" id="statsAfter"></div></div>
+    </div>
+  </section>
+
+  <section class="scene" id="key">
+    <h1>Glyph key</h1>
+    <p class="lede" style="margin-bottom:16px">Every item the filter renames, as the game names it and as you'll see it.</p>
+    <div class="panel gemstrip">
+      <h3>Gems</h3>
+      <div class="gemrows">
+        <div class="gemkey"><span class="dim">Shape <i>→</i> quality</span><span class="items" id="keyGemShapes"></span></div>
+        <div class="gemkey"><span class="dim">Color <i>→</i> gem</span><span class="items" id="keyGemColors"></span></div>
+      </div>
+    </div>
+    <div class="keycols">
+      <div class="panel"><h3>Potions</h3><div class="rows" id="keyPotions"></div></div>
+      <div class="panel"><h3>Scrolls, keys &amp; throwables</h3><div class="rows" id="keyTools"></div></div>
+      <div class="panel"><h3>Bases, charms &amp; junk</h3><div class="rows" id="keyBases"></div>
+        <h3 style="margin-top:18px">Gem examples</h3>
+        <div class="rows" id="keyGemExamples"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Glyph Loot Filter · rendered with Diablo II: Resurrected's fonts and colors from the mod's own strings</footer>
+
+<script>
+  const COLOR = {
+    '0': 'var(--c0)', '1': 'var(--c1)', '2': 'var(--c2)', '3': 'var(--c3)', '4': 'var(--c4)', '5': 'var(--c5)',
+    '6': 'var(--c6)', '7': 'var(--c7)', '8': 'var(--c8)', '9': 'var(--c9)', ';': 'var(--cPurple)',
+    ':': 'var(--cDarkGreen)', 'U': 'var(--cU)', 'T': 'var(--cT)',
+  };
+  const W = 'var(--c0)', BLUE = 'var(--c3)', ORANGE = 'var(--c8)', YELLOW = 'var(--c9)';
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+  // Renders one line of ÿc-coded text starting in `base` color
+  function line(text, base) {
+    let html = '', color = base;
+    for (const part of text.split(/(ÿc.)/)) {
+      if (/^ÿc.$/.test(part)) color = COLOR[part[2]] || color;
+      else if (part) html += `<span style="color:${color}">${esc(part)}</span>`;
+    }
+    return html;
+  }
+  // D2R stacks multi-line names bottom-up: text after \n is drawn above
+  function label(text, base = W, size) {
+    const lines = text.split('\n').reverse().map((l) => `<div>${line(l, base)}</div>`).join('');
+    return `<span class="label d2"${size ? ` style="font-size:${size}px"` : ''}>${lines}</span>`;
+  }
+  const fmt = (s, v) => s.replace(/%\+d/, (v >= 0 ? '+' : '') + v).replace(/%d/, v).replace(/%%/g, '%');
+  const $ = (id) => document.getElementById(id);
+
+  // Strings written by mod.js
+  const M = {
+    gcy: 'ÿc9▲ÿc0', gfr: 'ÿc1◆ÿc0', gpv: 'ÿc;★ÿc0', glb: 'ÿcU☆ÿc0', gsb: 'ÿcU■ÿc0', gcv: 'ÿc;▲ÿc0',
+    hp1: 'ÿc11ÿc0HP', hp2: 'ÿc12ÿc0HP', hp3: 'ÿc13ÿc0HP', hp4: 'ÿc14ÿc0HP', hp5: 'ÿc1♥ÿc0',
+    mp1: 'ÿc31ÿc0MP', mp2: 'ÿc32ÿc0MP', mp3: 'ÿc33ÿc0MP', mp4: 'ÿc34ÿc0MP', mp5: 'ÿc3♥ÿc0',
+    rvs: 'ÿc;♡ÿc0', rvl: 'ÿc;♥ÿc0',
+    tsc: '=ÿc3○ÿc0=', isc: '=ÿc1○ÿc0=', aqv: 'ÿc5→→ÿc0', cqv: 'ÿc5⇒⇒ÿc0', key: 'ÿc5†ÿc0',
+    vps: 'Stamina', yps: 'ÿc:Antidote',
+    gpl: 'Gas Pot ÿc21', gpm: 'Gas Pot ÿc22', gps: 'Gas Pot ÿc23', opl: 'Fire Pot ÿc81', opm: 'Fire Pot ÿc82', ops: 'Fire Pot ÿc83',
+    r07: 'Tal Rune ÿc9(ÿc07ÿc9)',
+    r10: 'Thul Rune ÿc9(ÿc310ÿc9) [ÿc9▲ÿc0+ÿc83ÿc9]',
+    r11: 'Amn Rune ÿc9(ÿc311ÿc9) [ÿc;▲ÿc0+ÿc83ÿc9]',
+    r19: 'Fal Rune ÿc9(ÿc819ÿc9) [ÿc1◆ÿc0+ÿc83ÿc9]',
+    r20: 'ÿcULem Rune ÿc9(ÿc820ÿc9) [ÿc2◆ÿc0+ÿc83ÿc9]\nÿc;•Pick  Up•ÿc0',
+    r24: 'ÿcUIst Rune ÿc9(ÿc824ÿc9) [ÿcU■ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+    r25: 'ÿcUGul Rune ÿc9(ÿc125ÿc9) [ÿc1■ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+    r26: 'ÿcUVex Rune ÿc9(ÿc126ÿc9) [ÿc2■ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+    r29: 'ÿcUSur Rune ÿc9(ÿc129ÿc9) [ÿc;☆ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+    r30: 'ÿcUBer Rune ÿc9(ÿc130ÿc9) [ÿcU☆ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+    r31: 'ÿcUJah Rune ÿc9(ÿc131ÿc9) [ÿc1☆ÿc0+ÿc82ÿc9]\nÿc;•Pick  Up•ÿc0',
+    r33: 'ÿcUZod Rune ÿc9(ÿc133ÿc9)\nÿc;•Pick  Up•ÿc0',
+    '7cr': '=Phase Blade=', utp: '=Archon Plate=', uit: '=Monarch=', wac: '=Occult Tome=',
+    cm1: '••Small Charm••', cm3: '••Grand Charm••', jew: '••Jewel••',
+    crude: 'ÿc5•ÿc6',
+  };
+
+  // ---- Loot pile: [vanilla text, vanilla color, filtered text, filtered base color]
+  const loot = [
+    ['Scroll of Town Portal', W, M.tsc, W],
+    ['Chipped Topaz', W, M.gcy, W],
+    ['Ist Rune', ORANGE, M.r24, ORANGE],
+    ['Minor Mana Potion', W, M.mp1, W],
+    ['1374 Gold', W, '1374 Gold', W],
+    ['Crude Short Sword', W, M.crude + 'Short Sword', W],
+    ['Flawed Ruby', W, M.gfr, W],
+    ['Super Healing Potion', W, M.hp5, W],
+    ['Phase Blade', W, M['7cr'], W],
+    ['Arrows', W, M.aqv, W],
+    ['Grand Charm of Vita', BLUE, M.cm3 + ' of Vita', BLUE],
+    ['Healing Potion', W, M.hp3, W],
+    ['Tal Rune', ORANGE, M.r07, ORANGE],
+    ['Scroll of Identify', W, M.isc, W],
+    ['Key', W, M.key, W],
+    ['Perfect Amethyst', W, M.gpv, W],
+    ['Hard Leather Armor', W, 'Hard Leather Armor', W],
+    ['Full Rejuvenation Potion', W, M.rvl, W],
+    ['Ruby Jewel of Fervor', BLUE, 'Ruby ' + M.jew + ' of Fervor', BLUE],
+    ['Stamina Potion', W, M.vps, W],
+  ];
+  $('lootBefore').innerHTML = loot.map(([t, c]) => label(t, c, 25)).join('');
+  $('lootAfter').innerHTML = loot.map(([, , t, c]) => label(t, c, 25)).join('');
+
+  // ---- Runes
+  const fig = (html, cap) => `<figure>${html}<figcaption>${cap}</figcaption></figure>`;
+  $('runeEq').innerHTML = [
+    fig(label(M.r24, ORANGE, 30), 'Ist Rune'), '<span class="op">× 2</span>', '<span class="op">+</span>',
+    fig(label(M.gsb, W, 30), 'Sapphire'), '<span class="op">→</span>',
+    fig(label(M.r25, ORANGE, 30), 'Gul Rune'),
+  ].join('');
+  $('gemKey').innerHTML = line(M.gsb, W);
+  const ex = [
+    [M.r10, '3 Thul + Chipped Topaz → Amn'],
+    [M.r19, '3 Fal + Flawed Ruby → Lem'],
+    [M.r26, '2 Vex + Emerald → Ohm'],
+    [M.r29, '2 Sur + Flawless Amethyst → Ber'],
+  ];
+  $('runeExamples').innerHTML = ex.map(([s, t]) =>
+    `<div class="pair" style="grid-template-columns: 330px 1fr">${label(s, ORANGE)}<span style="font-size:16px">${t}</span></div>`).join('');
+  $('highRunes').innerHTML = [M.r20, M.r30, M.r31, M.r33].map((s) => label(s, ORANGE)).join('');
+
+  // ---- Gems
+  const gemNames = ['Amethyst', 'Topaz', 'Sapphire', 'Emerald', 'Ruby', 'Diamond', 'Skull'];
+  const gemColor = { Amethyst: 'ÿc;', Topaz: 'ÿc9', Sapphire: 'ÿcU', Emerald: 'ÿc2', Ruby: 'ÿc1', Diamond: 'ÿc0', Skull: 'ÿc5' };
+  const grades = [['Chipped ', '▲'], ['Flawed ', '◆'], ['', '■'], ['Flawless ', '☆'], ['Perfect ', '★']];
+  $('gemRows').innerHTML = gemNames.map((g) =>
+    `<div class="pair" style="grid-template-columns: 1fr 40px 320px">
+       <div class="wrapline">${grades.map(([p]) => label(p + g, W, 20)).join('')}</div>
+       <div class="arrow">→</div>
+       <div class="wrapline" style="gap:12px">${grades.map(([, s]) => label(gemColor[g] + s + 'ÿc0', W, 30)).join('')}</div>
+     </div>`).join('');
+
+  // ---- Stats: [vanilla, filtered or null, value]
+  const stats = [
+    ['%+d to Sorceress Skill Levels', 'ÿc4•%+d to Sorceress Skill Levels•ÿc3', 2],
+    ['%+d%% Faster Cast Rate', 'ÿc0•%+d%% Faster Cast Rate•ÿc3', 20],
+    ['%+d%% Faster Hit Recovery', 'ÿc0•%+d%% Faster Hit Recovery•ÿc3', 10],
+    ['+%d to Life', null, 41],
+    ['+%d to Strength', null, 12],
+    ['Cold Resist %+d%%', 'ÿcU•Cold Resist %+d%%•ÿc3', 28],
+    ['Lightning Resist %+d%%', 'ÿc9•Lightning Resist %+d%%•ÿc3', 24],
+    ['%+d to Mana after each Kill', 'ÿc0•%+d to Mana after each Kill•ÿc3', 3],
+  ];
+  const head = (name) => `<div class="d2">${line(name, YELLOW)}</div><div class="d2">${line('Diadem', YELLOW)}</div>` +
+    `<div class="d2">${line('Defense: 61', W)}</div><div class="d2">${line('Required Level: 64', W)}</div>`;
+  $('statsBefore').innerHTML = head('Doom Visage') + stats.map(([v, , n]) => `<div class="d2">${line(fmt(v, n), BLUE)}</div>`).join('');
+  $('statsAfter').innerHTML = head('Doom Visage') + stats.map(([v, f, n]) => `<div class="d2">${line(fmt(f || v, n), BLUE)}</div>`).join('');
+
+  // ---- Glyph key: [vanilla text, vanilla color, filtered text, filtered base color]
+  const pair = ([a, ac, b, bc], size = 23) =>
+    `<div class="pair" style="grid-template-columns: 1fr 26px auto">
+       <div style="text-align:right">${label(a, ac, 17)}</div><div class="arrow" style="font-size:20px">→</div><div>${label(b, bc, size)}</div>
+     </div>`;
+  $('keyPotions').innerHTML = [
+    ['Minor Healing Potion', W, M.hp1, W],
+    ['Light Healing Potion', W, M.hp2, W],
+    ['Healing Potion', W, M.hp3, W],
+    ['Greater Healing Potion', W, M.hp4, W],
+    ['Super Healing Potion', W, M.hp5, W],
+    ['Minor Mana Potion', W, M.mp1, W],
+    ['Light Mana Potion', W, M.mp2, W],
+    ['Mana Potion', W, M.mp3, W],
+    ['Greater Mana Potion', W, M.mp4, W],
+    ['Super Mana Potion', W, M.mp5, W],
+    ['Rejuvenation Potion', W, M.rvs, W],
+    ['Full Rejuvenation Potion', W, M.rvl, W],
+  ].map((p) => pair(p)).join('');
+  $('keyTools').innerHTML = [
+    ['Scroll of Town Portal', W, M.tsc, W],
+    ['Scroll of Identify', W, M.isc, W],
+    ['Key', W, M.key, W],
+    ['Arrows', W, M.aqv, W],
+    ['Bolts', W, M.cqv, W],
+    ['Stamina Potion', W, M.vps, W],
+    ['Antidote Potion', W, M.yps, W],
+    ['Strangling Gas Potion', W, M.gpl, W],
+    ['Choking Gas Potion', W, M.gpm, W],
+    ['Rancid Gas Potion', W, M.gps, W],
+    ['Fulminating Potion', W, M.opl, W],
+    ['Exploding Potion', W, M.opm, W],
+    ['Oil Potion', W, M.ops, W],
+  ].map((p) => pair(p)).join('');
+  $('keyBases').innerHTML = [
+    ['Phase Blade', W, M['7cr'], W],
+    ['Archon Plate', W, M.utp, W],
+    ['Monarch', W, M.uit, W],
+    ['Occult Tome', W, M.wac, W],
+    ['Small Charm of Vita', BLUE, M.cm1 + ' of Vita', BLUE],
+    ['Grand Charm of Vita', BLUE, M.cm3 + ' of Vita', BLUE],
+    ['Ruby Jewel of Fervor', BLUE, 'Ruby ' + M.jew + ' of Fervor', BLUE],
+    ['Low Quality Buckler', W, M.crude + 'Buckler', W],
+    ['Damaged Club', W, M.crude + 'Club', W],
+    ['Cracked Sash', W, M.crude + 'Sash', W],
+    ['Crude Short Sword', W, M.crude + 'Short Sword', W],
+  ].map((p) => pair(p, 18)).join('');
+  const k = (glyph, name) => `<span class="k">${label(glyph, W, 18)}${name}</span>`;
+  $('keyGemShapes').innerHTML = grades.map(([p, s]) => k(s, p.trim() || 'Normal')).join('');
+  $('keyGemColors').innerHTML = gemNames.map((g) => k(gemColor[g] + '■ÿc0', g)).join('');
+  $('keyGemExamples').innerHTML = [
+    ['Flawless Ruby', W, 'ÿc1☆ÿc0', W],
+    ['Chipped Sapphire', W, 'ÿcU▲ÿc0', W],
+  ].map((p) => pair(p, 20)).join('');
+
+  const scene = location.search.slice(1) || 'loot';
+  document.getElementById(scene).classList.add('on');
+</script>
+</body>
+</html>

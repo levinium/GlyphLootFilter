@@ -28,10 +28,25 @@ D2R Simple Loot Filter before, disable it: both mods rename the same items.
 
 The filter supports the English (enUS) text only.
 
+## See what matters at a glance
+
+Common drops shrink to glyphs, so the drops worth picking up stand out from the rest
+of the pile.
+
+![The same pile of loot without and with the filter](docs/screenshots/loot.png)
+
+## Glyph key
+
+Every item the filter renames, from the game's own name to what you'll see on the ground.
+
+![Glyph key: potions, scrolls, throwables, bases, charms, junk and gems](docs/screenshots/key.png)
+
 ## Runes that read their own recipe
 
 Every rune from Thul up shows the gem and the number of runes the Horadric Cube needs
 to upgrade it:
+
+![Rune labels showing their cube recipe](docs/screenshots/runes.png)
 
 | Label | Meaning |
 |---|---|
@@ -49,6 +64,8 @@ blue with a purple **•Pick Up•** line above it, so a high rune is hard to mi
 in a pile of loot.
 
 ## Gems at a glance
+
+![Every gem name next to its glyph](docs/screenshots/gems.png)
 
 Each gem is a single symbol in its color. The shape gives the quality:
 
@@ -87,6 +104,8 @@ Low Quality, Damaged, Cracked and Crude items fade to a gray dot.
 Important item stats are wrapped in dots and colored by type. +skills and all
 resistances are gold; fire, cold, lightning and poison resistances are in their
 element's color; FCR, FHR and run/walk speed are white; attack stats are dark red.
+
+![An item tooltip without and with the filter](docs/screenshots/stats.png)
 
 ## Settings
 
